@@ -286,7 +286,7 @@ class BasicNoseRunner(BaseRunner):
                 # Discard test labels
                 continue
             if any(opt.startswith(d) for d in self.django_opts):
-                # Discard options handled by Djangp
+                # Discard options handled by Django
                 continue
 
             trans_opt = translate_option(opt)
