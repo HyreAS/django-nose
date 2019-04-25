@@ -38,6 +38,9 @@ OPTION_TRANSLATION = {'--failfast': '-x',
                       '--nose-verbosity': '--verbosity'}
 
 
+def get_scoped_test_db_name(original_name):
+    return f'{original_name}_{os.environ.get("HYRE_TEST_HTTP_HYRE_NATIVE_VERSION")}'
+
 def translate_option(opt):
     if '=' in opt:
         long_opt, value = opt.split('=', 1)
@@ -359,7 +362,7 @@ def _skip_create_test_db(self, verbosity=1, autoclobber=False, serialize=True,
         can_rollback = self._rollback_works()
         self.connection.settings_dict['SUPPORTS_TRANSACTIONS'] = can_rollback
 
-    return self._get_test_db_name()
+    return get_scoped_test_db_name(self._get_test_db_name())
 
 
 def _reusing_db():
@@ -440,7 +443,7 @@ class NoseTestSuiteRunner(BasicNoseRunner):
         for alias in connections:
             connection = connections[alias]
             creation = connection.creation
-            test_db_name = creation._get_test_db_name()
+            test_db_name = get_scoped_test_db_name(creation._get_test_db_name())
 
             # Mess with the DB name so other things operate on a test DB
             # rather than the real one. This is done in create_test_db when
